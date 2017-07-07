@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -228,7 +229,10 @@ public class ImagePickerModule extends ReactContextBaseJavaModule {
 
       // we create a tmp file to save the result
       File imageFile = createNewFile();
-      mCameraCaptureURI = Uri.fromFile(imageFile);
+//      mCameraCaptureURI = Uri.fromFile(imageFile);
+      mCameraCaptureURI = FileProvider.getUriForFile(mReactContext,
+              BuildConfig.APPLICATION_ID + ".provider",
+              imageFile);
       cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCameraCaptureURI);
     }
 
@@ -358,7 +362,10 @@ public class ImagePickerModule extends ReactContextBaseJavaModule {
       try {
         File file = createFileFromURI(uri);
         realPath = file.getAbsolutePath();
-        uri = Uri.fromFile(file);
+//        uri = Uri.fromFile(file);
+        uri = FileProvider.getUriForFile(mReactContext,
+                BuildConfig.APPLICATION_ID + ".provider",
+                file);
       } catch (Exception e) {
         // image not in cache
         response.putString("error", "Could not read photo");
@@ -435,7 +442,10 @@ public class ImagePickerModule extends ReactContextBaseJavaModule {
         response.putString("error", "Can't resize the image");
       } else {
          realPath = resized.getAbsolutePath();
-         uri = Uri.fromFile(resized);
+//         uri = Uri.fromFile(resized);
+         uri = FileProvider.getUriForFile(mReactContext,
+                 BuildConfig.APPLICATION_ID + ".provider",
+                 resized);
          BitmapFactory.decodeFile(realPath, options);
          response.putInt("width", options.outWidth);
          response.putInt("height", options.outHeight);
